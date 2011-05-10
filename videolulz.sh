@@ -36,15 +36,14 @@ function playvideo
 # Select the video in the list.
 # First select those marked with an "*"
 video=$(grep -e ^\* $list | sed 's/^*//')
-if [ -z "$video" ]; then
+if [ -z "$video" ]
+then
 	# If none selected, choose a random one
-	video=$(sort -R $list|head -1)
+	video=$(sort -R $list|grep -v -e '^\B' | head -1)
 else
 	# Removed marked videos
 	sed -i 's/^*//' $list
 fi
 
-# Play all the videos!!
-for v in $video; do
-	playvideo $video
-done
+video=$(echo "$video" | cut -f1 -d" ")
+playvideo $video
