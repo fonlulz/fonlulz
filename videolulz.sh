@@ -3,6 +3,7 @@
 # Configuration 
 dir=/var/data/FONReports/sounds/up/videos/ # basedir
 list=$dir/list.txt # List of youtube videos
+stats=/tmp/stats.txt # Registry of played videos
 data=$dir/data/ # Temporal cache
 introvideo=$data/intro.flv # An optional intro before playing every video
 youtubedl=/home/champi/bin/youtube-dl # Path to youtube-dl
@@ -31,19 +32,34 @@ function playvideo
 	fi
 
 	DISPLAY=:0.0 mplayer -fs $playintro $file
+	echo $video >> $stats
 }
 
-# Select the video in the list.
-# First select those marked with an "*"
-video=$(grep -e ^\* $list | sed 's/^*//')
-if [ -z "$video" ]
-then
-	# If none selected, choose a random one
-	video=$(sort -R $list|grep -v -e '^\B' | head -1)
-else
-	# Removed marked videos
-	sed -i 's/^*//' $list
-fi
+##
+# Select a video from the list
+#
+# First we look for any video marked with a "*".
+# If none we get a random one and check the latest 20 played videos
+# to avoid repeating
+function selectvideo
+{
+	# First select those marked with an "*"
+	video=$(grep -e ^\* $list | sed 's/^*//'|head -1|cut -f1 -d" ")
+	if [ "$video" ]
+	then
+		echo $video
+		exit
+	fi
 
-video=$(echo "$video" | cut -f1 -d" ")
+	# If none selected, choose a random one
+	views=100
+	until [ $views -lt 1 ]
+	do
+		video=$(sort -R $list|grep -v -e '^\B' | head -1|cut -f1 -d" ")
+	        views=$(tail -20 $stats 2>/dev/null | grep "$video" -c)
+	done
+	echo $video
+}
+
+video=$(selectvideo)
 playvideo $video
