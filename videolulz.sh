@@ -47,6 +47,7 @@ function selectvideo
 	video=$(grep -e ^\* $list | sed 's/^*//'|head -1|cut -f1 -d" ")
 	if [ "$video" ]
 	then
+		sed -i 's/^*//' $list
 		echo $video
 		exit
 	fi
