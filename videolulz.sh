@@ -18,11 +18,15 @@ youtubedl=/home/champi/bin/youtube-dl # Path to youtube-dl
 function playvideo
 {
 	video=$1
-	file=$data/$($youtubedl "$video" --get-filename)
-	
-	if [ ! -f $file ]
+	if [ $(echo $video|grep http -c) -ge 1 ]
 	then
-	        $youtubedl "$video" -c -o $file
+		file=$data/$($youtubedl "$video" --get-filename)
+		if [ ! -f $file ]
+	        then
+	                $youtubedl "$video" -c -o $file
+	        fi
+	else
+		file=$data/$video
 	fi
 
 	playintro=""
