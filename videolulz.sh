@@ -20,10 +20,23 @@ function playvideo
 	video=$1
 	if [ $(echo $video|grep http -c) -ge 1 ]
 	then
-		file=$data/$($youtubedl "$video" --get-filename)
+		filename=$($youtubedl "$video" --get-filename 2> /dev/null)
+		if [ -z "$filename" ]
+		then
+			# Maybe the video was removed from youtube
+			# but it's still on the cache
+			filename=$(echo "$video"|cut -f2 -d=).flv
+		fi
+
+		file=$data/$filename
 		if [ ! -f $file ]
 	        then
-	                $youtubedl "$video" -c -o $file
+	                $youtubedl "$video" -c -o $file 2>/dev/null
+			if [ $? -ne 0 ]
+			then
+				echo ERROR
+				exit
+			fi
 	        fi
 	else
 		file=$data/$video
@@ -67,4 +80,8 @@ function selectvideo
 }
 
 video=$(selectvideo)
-playvideo $video
+error=$(playvideo $video)
+until [ "$error" != 'ERROR' ]
+do
+	error=$(playvideo $video)
+done
