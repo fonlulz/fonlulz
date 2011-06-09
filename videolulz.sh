@@ -69,12 +69,15 @@ function selectvideo
 		exit
 	fi
 
+	limit=$(wc -l $list|cut -f1 -d" ")
+	limit=$(($limit - 10))
+
 	# If none selected, choose a random one
 	views=100
 	until [ $views -lt 1 ]
 	do
 		video=$(sort -R $list|grep -v -e '^\B' | head -1|cut -f1 -d" ")
-	        views=$(tail -20 $stats 2>/dev/null | grep "$video" -c)
+	        views=$(tail -$limit $stats 2>/dev/null | grep "$video" -c)
 	done
 	echo $video
 }
