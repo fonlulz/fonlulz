@@ -3,8 +3,8 @@
 # Configuration 
 dir=/var/data/FONReports/sounds/up/videos/ # basedir
 list=$dir/list.txt # List of youtube videos
-stats=/tmp/stats.txt # Registry of played videos
 data=$dir/data/ # Temporal cache
+stats=$data/stats.txt # Registry of played videos
 introvideo=$data/intro.flv # An optional intro before playing every video
 youtubedl=/home/champi/bin/youtube-dl # Path to youtube-dl
 
