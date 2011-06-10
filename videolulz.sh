@@ -82,7 +82,13 @@ function selectvideo
 	echo $video
 }
 
-video=$(selectvideo)
+if [ $# -ge 1 ]
+then
+	video=$1
+else
+	video=$(selectvideo)
+fi
+
 error=$(playvideo $video)
 until [ "$error" != 'ERROR' ]
 do
