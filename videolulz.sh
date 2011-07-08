@@ -8,6 +8,12 @@ stats=$data/stats.txt # Registry of played videos
 introvideo=$data/intro.flv # An optional intro before playing every video
 youtubedl=/home/champi/bin/youtube-dl # Path to youtube-dl
 
+if [ $(date +%d%m) = "1107" ]
+then
+  # There's a special videolulz to celebrate Spain world championship
+  exit
+fi
+
 ##
 # Play a video from youtube using mplayer in fullscreen.
 #
